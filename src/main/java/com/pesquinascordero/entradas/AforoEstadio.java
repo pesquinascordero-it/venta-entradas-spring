@@ -21,11 +21,11 @@ public class AforoEstadio {
         return id;
     }
 
-    public int getButacasLibres() {
+    public synchronized int getButacasLibres() {
         return butacasLibres;
     }
 
-    public boolean venderButaca() {
+    public synchronized boolean venderButaca() {
         if (butacasLibres > 0) {
             butacasLibres--;
             return true;
