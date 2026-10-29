@@ -18,14 +18,17 @@ public class CompraController {
     }
 
     @GetMapping("/comprar")
-    public String comprar() {
-        GeneradorQR qr1 = generadorQR.getObject();
-        GeneradorQR qr2 = generadorQR.getObject();
+    public RespuestaCompra comprar() {
+        boolean vendida =aforo.venderButaca();
 
-        return "Aforo: " + aforo.getId()
-             + " | Carrito: " + carrito.getId()
-             + " | QR1: " + qr1.getId()
-             + " | QR2: " + qr2.getId();
+        if (!vendida) {
+            return new RespuestaCompra("Entradas agotadas", 0, null, null);
+        }
+
+        GeneradorQR qr = generadorQR.getObject();
+        
+        return new RespuestaCompra("Entrada comprada ", aforo.getButacasLibres(), carrito.getId(), qr.getId()) ;
+
     }
 
     @GetMapping("/sin-inyeccion")

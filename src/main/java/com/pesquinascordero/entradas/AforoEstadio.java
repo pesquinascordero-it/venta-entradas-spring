@@ -10,6 +10,8 @@ public class AforoEstadio {
 
     private final String id = UUID.randomUUID().toString().substring(0, 5);
 
+    private int butacasLibres = 5;
+
     public AforoEstadio() {
         System.out.println(">>> Ha nacido un AFORO: " + id);
     }
@@ -17,5 +19,17 @@ public class AforoEstadio {
 
     public String getId() {
         return id;
+    }
+
+    public int getButacasLibres() {
+        return butacasLibres;
+    }
+
+    public boolean venderButaca() {
+        if (butacasLibres > 0) {
+            butacasLibres--;
+            return true;
+        }
+        return false;
     }
 }
