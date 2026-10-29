@@ -3,6 +3,7 @@ package com.pesquinascordero.entradas;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PostMapping;
 
 @RestController
 public class CompraController {
@@ -17,7 +18,7 @@ public class CompraController {
         this.generadorQR = generadorQR;
     }
 
-    @GetMapping("/comprar")
+    @PostMapping("/compras")
     public RespuestaCompra comprar() {
         boolean vendida =aforo.venderButaca();
 
@@ -27,7 +28,7 @@ public class CompraController {
 
         GeneradorQR qr = generadorQR.getObject();
         
-        return new RespuestaCompra("Entrada comprada ", aforo.getButacasLibres(), carrito.getId(), qr.getId()) ;
+        return new RespuestaCompra("Entrada comprada", aforo.getButacasLibres(), carrito.getId(), qr.getId()) ;
 
     }
 
