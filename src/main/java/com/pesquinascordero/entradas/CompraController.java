@@ -4,6 +4,8 @@ import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 @RestController
 public class CompraController {
@@ -19,16 +21,18 @@ public class CompraController {
     }
 
     @PostMapping("/compras")
-    public RespuestaCompra comprar() {
+    public ResponseEntity<RespuestaCompra> comprar() {
         boolean vendida =aforo.venderButaca();
 
         if (!vendida) {
-            return new RespuestaCompra("Entradas agotadas", 0, null, null);
+            RespuestaCompra respuesta = new RespuestaCompra("Entradas agotadas", 0, null, null);
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(respuesta);
         }
 
         GeneradorQR qr = generadorQR.getObject();
         
-        return new RespuestaCompra("Entrada comprada", aforo.getButacasLibres(), carrito.getId(), qr.getId()) ;
+        RespuestaCompra respuesta = new RespuestaCompra("Entrada comprada", aforo.getButacasLibres(), carrito.getId(), qr.getId()) ;
+        return ResponseEntity.status(HttpStatus.CREATED).body(respuesta);
 
     }
 
