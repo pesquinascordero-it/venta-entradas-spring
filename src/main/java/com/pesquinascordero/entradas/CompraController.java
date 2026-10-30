@@ -1,6 +1,5 @@
 package com.pesquinascordero.entradas;
 
-import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,28 +9,21 @@ import org.springframework.http.ResponseEntity;
 @RestController
 public class CompraController {
 
-    private final AforoEstadio aforo;
-    private final CarritoCompra carrito;
-    private final ObjectProvider<GeneradorQR> generadorQR;
+    private final CompraService compraService;
 
-    public CompraController(AforoEstadio aforo, CarritoCompra carrito, ObjectProvider<GeneradorQR> generadorQR) {
-        this.aforo = aforo;
-        this.carrito = carrito;
-        this.generadorQR = generadorQR;
+    public CompraController(CompraService compraService) {
+        this.compraService = compraService;
     }
 
     @PostMapping("/compras")
     public ResponseEntity<RespuestaCompra> comprar() {
-        boolean vendida =aforo.venderButaca();
+        RespuestaCompra respuesta = compraService.comprar();
 
-        if (!vendida) {
-            RespuestaCompra respuesta = new RespuestaCompra("Entradas agotadas", 0, null, null);
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(respuesta);
+        if (respuesta == null) {
+            RespuestaCompra agotado = new RespuestaCompra("Entradas agotadas", 0, null, null);
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(agotado);
         }
 
-        GeneradorQR qr = generadorQR.getObject();
-        
-        RespuestaCompra respuesta = new RespuestaCompra("Entrada comprada", aforo.getButacasLibres(), carrito.getId(), qr.getId()) ;
         return ResponseEntity.status(HttpStatus.CREATED).body(respuesta);
 
     }
